@@ -1,0 +1,8 @@
+Dans le fichier que j'avais, j'avais un fichier mp3, ce qui a causé une erreur dans le programme, car il y avait 1 jpg de plus que de wav
+
+Je prends tous les fichiers wav et jpg du dossier, et j'en fais deux liste, que je trie par ordre alphabétique.
+Je vérifie que les listes sont de la même taille
+Ensuite, j'envoie chaque élément de chaque liste dans une boucle pour envoyer la musique sur bandcamp (ex premiere image et première musique)
+
+
+!!!! Si ca te b
