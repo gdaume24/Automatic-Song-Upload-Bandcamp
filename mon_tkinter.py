@@ -7,7 +7,7 @@ import uuid
 import threading
 
 _1 = "geoffroy.daumer@outlook.fr"
-_2 = "kirbycath61"
+_2 = ""
 _3 = r"C:\Users\geoff\OneDrive - yncréa\Documents\pro\ordi manu\essai musique pithon"
 folder_dict = {}
 folder_list = []
