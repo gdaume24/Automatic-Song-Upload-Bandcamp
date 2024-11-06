@@ -211,7 +211,6 @@ def tkinter():
 
 
 # EMAIL = "geoffroy.daumer@outlook.fr"
-# MDP = "kirbycath61"
 
 # chemin_dossier = r"C:\Users\geoff\OneDrive - yncréa\Documents\pro\ordi manu\essai musique pithon"
 
