@@ -202,7 +202,7 @@ if __name__ == "__main__":
 
 
     EMAIL = "geoffroy.daumer@outlook.fr"
-    MDP = "kirbycath61"
+    MDP = ""
     chemin_dossier = r"C:\Users\geoff\OneDrive - yncréa\Documents\pro\ordi manu\essai musique pithon"
     nom_wav = "Ben E. King - Music Trance .wav"
     nom_jpg = "Ben E. King - Music Trance .jpg"
