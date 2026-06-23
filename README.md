@@ -53,8 +53,7 @@ Dans la fenêtre : choisir le **dossier**, ajuster **prix** et **tags** si besoi
 Le bouton **« Se connecter (1re fois) »** déclenche l'étape 1 directement depuis l'interface.
 
 > Un dossier d'exemple (`test/dossier_test/`, pochettes 1400×1400) est fourni et chargé par défaut
-> pour tester le flux de bout en bout. `test/demo gif/` contient un seul morceau, pratique pour
-> enregistrer une démo courte.
+> pour tester le flux de bout en bout.
 
 ### Convention de nommage des fichiers
 
@@ -109,19 +108,7 @@ pas un service hébergé** :
 - c'est un **outil de bureau ponctuel** (« j'ai 40 morceaux à publier ce soir »), pas un service 24/7.
 
 C'est donc un **outil local** assumé. La bonne façon de le présenter dans un portfolio n'est pas
-un lien vers un VPS, mais une **démo GIF** dans ce README (voir ci-dessous) + le code commenté.
-
-### Enregistrer le GIF de démo
-
-Active le **mode démo** dans l'app (ralenti + surbrillance), lance un upload, capture l'écran,
-puis convertis en GIF léger (macOS, avec `ffmpeg`) :
-
-```bash
-# enregistrer l'écran -> .mov (QuickTime : Cmd+Shift+5), puis :
-ffmpeg -i capture.mov -vf "fps=12,scale=720:-1:flags=lanczos" -loop 0 docs/demo.gif
-```
-
-Place le fichier en `docs/demo.gif` : il s'affichera automatiquement en haut de ce README.
+un lien vers un VPS, mais la **démo GIF** en haut de ce README + le code commenté.
 
 ---
 
