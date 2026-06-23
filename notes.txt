@@ -1,6 +1,3 @@
-Dans le fichier que j'avais, j'avais un fichier mp3, ce qui a causé une erreur dans le programme, car il y avait 1 jpg de plus que de wav
-
-
 Fonctionnement du programme :
 
 - Prend tous les fichiers wav (musiques) et jpg (images) du dossier, en fais deux liste, les trie par ordre alphabétique.

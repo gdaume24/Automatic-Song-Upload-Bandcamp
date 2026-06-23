@@ -1,0 +1,4 @@
+.bandcamp_cookies.json
+.fox_profile/
+__pycache__/
+*.pyc
