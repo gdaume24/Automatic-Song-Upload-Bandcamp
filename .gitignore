@@ -1,0 +1,9 @@
+.bandcamp_cookies.json
+.bandcamp_config.json
+.fox_profile/
+__pycache__/
+*.pyc
+
+# Enregistrements bruts (lourds) : seul le GIF monté est versionné.
+*.mov
+*.mp4
