@@ -12,6 +12,7 @@ champ email / mot de passe.
 
 import os
 import sys
+import json
 import queue
 import threading
 import subprocess
@@ -27,6 +28,18 @@ from selenium import webdriver
 DEFAULT_PRIX = "0"
 DEFAULT_TAGS = "electronic, lo-fi, instrumental"
 DOSSIER_TEST = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test", "dossier_test")
+
+# Preferences memorisees entre deux sessions (chemin, prix, tags, mode demo).
+# Fichier local non versionne (chemins personnels) -> voir .gitignore.
+FICHIER_CONFIG = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".bandcamp_config.json")
+
+
+def charger_config():
+    try:
+        with open(FICHIER_CONFIG) as f:
+            return json.load(f)
+    except Exception:
+        return {}
 
 # Couleurs (theme sombre, plus "produit").
 BG = "#1e1f26"
@@ -46,9 +59,11 @@ class Application:
         self.evenements = queue.Queue()      # messages (log/progress/etat) du thread de travail
         self.file_dossiers = []              # dossiers en attente (clics pendant un traitement)
         self.traitement_en_cours = False
+        self.config = charger_config()       # preferences de la session precedente
 
         self._construire_fenetre()
         self._verifier_session()
+        self.fenetre.protocol("WM_DELETE_WINDOW", self._fermer)
         self.fenetre.after(100, self._vider_la_file)
 
     # ----------------------------------------------------------------- UI ---
@@ -106,23 +121,23 @@ class Application:
 
         # Dossier
         _lbl(0, "Dossier")
-        self.var_chemin = tk.StringVar(value = DOSSIER_TEST)
+        self.var_chemin = tk.StringVar(value = self.config.get("chemin", DOSSIER_TEST))
         ttk.Entry(carte, textvariable = self.var_chemin).grid(row = 0, column = 1, sticky = "ew")
         ttk.Button(carte, text = "Parcourir", style = "Link.TButton",
                    command = self._choisir_dossier).grid(row = 0, column = 2, padx = (8, 0))
 
         # Prix
         _lbl(1, "Prix (€)")
-        self.var_prix = tk.StringVar(value = DEFAULT_PRIX)
+        self.var_prix = tk.StringVar(value = self.config.get("prix", DEFAULT_PRIX))
         ttk.Entry(carte, textvariable = self.var_prix, width = 10).grid(row = 1, column = 1, sticky = "w")
 
         # Tags
         _lbl(2, "Tags")
-        self.var_tags = tk.StringVar(value = DEFAULT_TAGS)
+        self.var_tags = tk.StringVar(value = self.config.get("tags", DEFAULT_TAGS))
         ttk.Entry(carte, textvariable = self.var_tags).grid(row = 2, column = 1, columnspan = 2, sticky = "ew")
 
         # Mode demo (ralenti)
-        self.var_demo = tk.BooleanVar(value = True)
+        self.var_demo = tk.BooleanVar(value = self.config.get("demo", True))
         ttk.Checkbutton(carte, text = "Mode démo : ralenti + surbrillance (on voit chaque champ se remplir)",
                         variable = self.var_demo).grid(row = 3, column = 1, columnspan = 2, sticky = "w", pady = (8, 0))
 
@@ -159,6 +174,23 @@ class Application:
         if chemin:
             self.var_chemin.set(chemin)
 
+    def _sauver_config(self):
+        # Memorise les champs pour la prochaine session.
+        try:
+            with open(FICHIER_CONFIG, "w") as f:
+                json.dump({
+                    "chemin": self.var_chemin.get().strip(),
+                    "prix": self.var_prix.get().strip(),
+                    "tags": self.var_tags.get().strip(),
+                    "demo": bool(self.var_demo.get()),
+                }, f, indent = 2)
+        except Exception:
+            pass
+
+    def _fermer(self):
+        self._sauver_config()
+        self.fenetre.destroy()
+
     def _verifier_session(self):
         if os.path.exists(FICHIER_COOKIES):
             self.lbl_session.configure(text = "Session : ✓ connectée (cookies enregistrés)", foreground = OK)
@@ -190,6 +222,8 @@ class Application:
             "tags": self.var_tags.get().strip(),
             "pause": 1.1 if self.var_demo.get() else 0.25,
         }
+
+        self._sauver_config()
 
         if self.traitement_en_cours:
             self.file_dossiers.append(dossier)
