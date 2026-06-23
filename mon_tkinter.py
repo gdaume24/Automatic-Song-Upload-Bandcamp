@@ -199,14 +199,29 @@ class Application:
 
     def _lancer_login(self):
         # Lance login_once.py dans un sous-processus (Firefox s'ouvre, connexion manuelle).
-        self._log("Ouverture de la connexion manuelle (login_once.py)...", "accent")
+        self._log("Une fenêtre Firefox va s'ouvrir.", "accent")
+        self._log("➜ Connecte-toi À LA MAIN : email + mot de passe, puis résous le CAPTCHA.", "accent")
+        self._log("  Dès que tu es connecté, la session est enregistrée et Firefox se ferme.", "accent")
+        self.btn_login.configure(state = "disabled")
         script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "login_once.py")
 
         def run():
             try:
-                subprocess.run([sys.executable, script], check = False)
+                # -u : sortie non bufferisee -> les messages remontent en direct
+                # dans le journal de l'interface.
+                proc = subprocess.Popen(
+                    [sys.executable, "-u", script],
+                    stdout = subprocess.PIPE, stderr = subprocess.STDOUT, text = True,
+                )
+                for ligne in proc.stdout:
+                    if ligne.strip():
+                        self.evenements.put(("log", ligne.rstrip()))
+                proc.wait()
+            except Exception as e:
+                self.evenements.put(("log", f"Erreur connexion : {e}"))
             finally:
                 self.evenements.put(("session", None))
+                self.evenements.put(("login_done", None))
 
         threading.Thread(target = run, daemon = True).start()
 
@@ -311,6 +326,8 @@ class Application:
             self.btn_lancer.configure(state = "normal")
         elif type_ev == "session":
             self._verifier_session()
+        elif type_ev == "login_done":
+            self.btn_login.configure(state = "normal")
 
     def _log(self, texte, tag = None):
         self.journal.configure(state = "normal")
